@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#1a237e"/>
+<title>Sri Kakatiya Cheyutha Charitable Trust ERP</title>
+<style>
+  :root{--navy:#1a237e;--red:#c62828;--gold:#f9a825;--green:#2e7d32;
+    --sick:#b71c1c;--muted:#5c6bc0;--light:#f0f4ff;--orange:#e65100;--purple:#7b1fa2;--teal:#00695c;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Georgia,serif;background:var(--light);min-height:100vh;color:#111}
+  button{cursor:pointer;font-family:inherit;border:none;transition:opacity .2s}
+  button:hover{opacity:.85} select,input{font-family:inherit}
+  input[type=checkbox]{accent-color:var(--sick)}
+  #topbar{background:var(--navy);position:sticky;top:0;z-index:100;
+    box-shadow:0 2px 12px rgba(26,35,126,.3);display:flex;align-items:center;
+    padding:0 14px;height:56px;gap:8px}
+  #topbar .brand{color:var(--gold);font-weight:800;font-size:12px;white-space:nowrap;flex-shrink:0}
+  #nav-links{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+  .nav-btn{background:transparent;color:#b3c5ff;padding:5px 9px;border-radius:8px;font-weight:700;font-size:10px;white-space:nowrap}
+  .nav-btn.active{background:var(--gold);color:#000}
+  #hamburger{display:none;background:transparent;color:var(--gold);font-size:22px;padding:4px 8px;margin-left:auto}
+  #mobile-menu{display:none;background:var(--navy);padding:10px 16px 14px;flex-direction:column;gap:4px;border-top:1px solid rgba(255,255,255,.1)}
+  #mobile-menu .nav-btn{text-align:left;padding:10px 14px;font-size:13px}
+  #content{max-width:1100px;margin:0 auto;padding:20px 14px}
+  .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(26,35,126,.08)}
+  .stat-card{background:#fff;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(26,35,126,.08)}
+  .stat-val{font-size:24px;font-weight:800;font-family:Georgia,serif}
+  .stat-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+  .hero{background:linear-gradient(135deg,var(--navy) 0%,#283593 60%,var(--red) 100%);border-radius:20px;padding:26px 22px;margin-bottom:20px;box-shadow:0 8px 32px rgba(26,35,126,.25)}
+  .hero-logo{width:74px;height:74px;border-radius:50%;border:3px solid var(--gold);background:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0}
+  .feat-chip{background:rgba(255,255,255,.15);color:#fff;border-radius:20px;padding:4px 11px;font-size:10px;font-weight:600}
+  .free-banner{background:linear-gradient(90deg,#1b5e20,#2e7d32);border-radius:12px;padding:12px 18px;color:#fff;display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:Georgia,serif;flex-shrink:0}
+  .rank-badge{border-radius:4px;padding:2px 7px;font-size:10px;font-weight:800;margin-left:4px;color:#000}
+  .sick-badge{background:var(--sick);color:#fff;border-radius:4px;padding:2px 6px;font-size:9px;font-weight:700;margin-left:4px}
+  .free-badge{background:#1b5e20;color:#fff;border-radius:4px;padding:2px 6px;font-size:9px;font-weight:700;margin-left:4px}
+  .student-row{background:#fff;border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;border:1.5px solid rgba(26,35,126,.12);box-shadow:0 2px 8px rgba(26,35,126,.05);transition:box-shadow .2s}
+  .student-row:hover{box-shadow:0 4px 20px rgba(26,35,126,.15)}
+  .student-row.sick-row{background:#fff5f5;border-color:rgba(183,28,28,.3)}
+  table{width:100%;border-collapse:collapse;font-size:11px}
+  th{background:var(--navy);color:#fff;padding:8px 10px;text-align:left;font-size:10px}
+  td{padding:7px 10px;border-bottom:1px solid rgba(26,35,126,.08)}
+  tr:nth-child(even) td{background:#f8f9ff}
+  .topper-card{background:linear-gradient(135deg,var(--light),#fff);border:2px solid var(--gold);border-radius:14px;padding:13px 16px;cursor:pointer;text-align:center;min-width:128px;position:relative;transition:transform .2s}
+  .topper-card:hover{transform:translateY(-4px)}
+  .id-card{background:linear-gradient(160deg,var(--navy) 0%,#283593 50%,var(--red) 100%);border-radius:16px;padding:17px;color:#fff;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(26,35,126,.3)}
+  .filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+  .filter-bar select{padding:6px 11px;border-radius:8px;border:1.5px solid rgba(26,35,126,.25);font-size:11px;color:var(--navy);background:#fff}
+  .filter-bar label{font-size:11px;color:var(--sick);font-weight:600;display:flex;align-items:center;gap:4px;cursor:pointer}
+  .tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+  .tab-btn{padding:6px 14px;border-radius:8px;font-weight:700;font-size:11px;background:#eee;color:var(--navy)}
+  .tab-btn.active{background:var(--navy);color:#fff}
+  .sec-title{font-size:19px;font-weight:800;color:var(--navy);margin-bottom:12px;font-family:Georgia,serif}
+  .sec-sub{font-size:12px;font-weight:800;color:var(--red);margin:10px 0 5px}
+  .day-chip{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+  .day-chip.present{background:#e8f5e9;border:1.5px solid var(--green);color:var(--green)}
+  .day-chip.absent{background:#ffebee;border:1.5px solid var(--sick);color:var(--sick)}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:13px}
+  .grid-stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:11px;margin-bottom:20px}
+  .member-chip{display:flex;align-items:center;gap:10px;background:var(--light);border-radius:12px;padding:10px 14px;border:1px solid rgba(26,35,126,.12)}
+  .alert{border-radius:10px;padding:10px 13px;margin-bottom:14px;font-size:11px;font-weight:600}
+  .alert-sick{background:#ffebee;border:2px solid var(--sick);color:var(--sick)}
+  .alert-green{background:#e8f5e9;border:2px solid var(--green);color:var(--green)}
+  .alert-orange{background:#fff3e0;border:2px solid var(--orange);color:var(--orange)}
+  .alert-purple{background:#ede7f6;border:2px solid var(--purple);color:var(--purple)}
+  .alert-teal{background:#e0f2f1;border:2px solid var(--teal);color:var(--teal)}
+  .btn{padding:6px 14px;border-radius:8px;font-weight:700;font-size:11px;font-family:inherit}
+  .btn-navy{background:var(--navy);color:#fff} .btn-red{background:var(--red);color:#fff}
+  .btn-green{background:var(--green);color:#fff} .btn-gold{background:var(--gold);color:#000;font-weight:800}
+  .btn-purple{background:var(--purple);color:#fff} .btn-ghost{background:#eee;color:var(--navy)}
+  .btn-teal{background:var(--teal);color:#fff}
+  #footer{text-align:center;padding:16px;color:var(--muted);font-size:10px;border-top:2px solid rgba(26,35,126,.1);margin-top:28px}
+  .back-btn{padding:6px 14px;border-radius:8px;font-weight:700;font-size:11px;background:var(--light);color:var(--navy);margin-bottom:12px;display:inline-block}
+  .mark-top{background:#e8f5e9;color:var(--green);border-radius:6px;padding:2px 7px;font-weight:700}
+  .mark-low{background:#ffebee;color:var(--sick);border-radius:6px;padding:2px 7px;font-weight:700}
+  .mark-avg{background:#fff9e6;color:var(--orange);border-radius:6px;padding:2px 7px;font-weight:700}
+  .donor-card{border:1.5px solid var(--gold);border-radius:16px;padding:18px}
+  .dashed-add{border:2px dashed rgba(26,35,126,.3);border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;text-align:center}
+  .health-chip{display:inline-block;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700}
+  .exam-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--light);border-radius:10px;margin-bottom:7px;flex-wrap:wrap;gap:6px}
+  .timetable-cell{background:#fff;border:1.5px solid rgba(26,35,126,.15);border-radius:8px;padding:8px 10px;text-align:center;font-size:10px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+  .timetable-cell.header{background:var(--navy);color:#fff;font-weight:700;font-size:10px;min-height:36px}
+  @media(max-width:640px){
+    #nav-links{display:none} #hamburger{display:block}
+    #topbar .brand{font-size:10px} .hero{padding:18px 14px}
+    table{font-size:9px} th,td{padding:5px 6px} .grid-2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div id="topbar">
+  <div class="brand">🏛️ Sri Kakatiya Cheyutha Charitable Trust ERP</div>
+  <div id="nav-links">
+    <button class="nav-btn active" onclick="showPage('home')">🏛️ Home</button>
+    <button class="nav-btn" onclick="showPage('students')">👨‍🎓 Students</button>
+    <button class="nav-btn" onclick="showPage('attendance')">📋 Attendance</button>
+    <button class="nav-btn" onclick="showPage('rankings')">🏆 Rankings</button>
+    <button class="nav-btn" onclick="showPage('donors')">❤️ Donors</button>
+    <button class="nav-btn" onclick="showPage('events')">📸 Events</button>
+    <button class="nav-btn" onclick="showPage('reports')">📊 Reports</button>
+    <button class="nav-btn" onclick="showPage('health')">🏥 Health</button>
+    <button class="nav-btn" onclick="showPage('exams')">📅 Exams</button>
+    <button class="nav-btn" onclick="showPage('cctv')">📹 CCTV</button>
+  </div>
+  <button id="hamburger" onclick="toggleMenu()">☰</button>
+</div>
+<div id="mobile-menu">
+  <button class="nav-btn" onclick="showPage('home');toggleMenu()">🏛️ Home</button>
+  <button class="nav-btn" onclick="showPage('students');toggleMenu()">👨‍🎓 Students</button>
+  <button class="nav-btn" onclick="showPage('attendance');toggleMenu()">📋 Attendance</button>
+  <button class="nav-btn" onclick="showPage('rankings');toggleMenu()">🏆 Rankings</button>
+  <button class="nav-btn" onclick="showPage('donors');toggleMenu()">❤️ Donors</button>
+  <button class="nav-btn" onclick="showPage('events');toggleMenu()">📸 Events</button>
+  <button class="nav-btn" onclick="showPage('reports');toggleMenu()">📊 Reports</button>
+  <button class="nav-btn" onclick="showPage('health');toggleMenu()">🏥 Health</button>
+  <button class="nav-btn" onclick="showPage('exams');toggleMenu()">📅 Exams</button>
+  <button class="nav-btn" onclick="showPage('cctv');toggleMenu()">📹 CCTV</button>
+</div>
+<div id="content"></div>
+<div id="footer">Sri Kakatiya Cheyutha Charitable Trust · Nizamabad District, Telangana · Classes 5th–10th · 🎓 FREE Education for All Children</div>
+
+<script>
+const SCHOOLS=["Nizamabad Central School","Bodhan Hostel School","Armoor Branch School","Kamareddy School"];
+const HOSTELS=["Bodhan Boys Hostel","Nizamabad Girls Hostel","Armoor Mixed Hostel"];
+const CLASSES=["5th","6th","7th","8th","9th","10th"];
+const WEEK=["Mon","Tue","Wed","Thu","Fri","Sat"];
+const SUBJECTS=["Telugu","Hindi","English","Maths","Science","Social"];
+
+const STUDENTS=[
+  {id:1,name:"Ravi Kumar",   cls:"10th",school:SCHOOLS[0],hostel:HOSTELS[0],marks:98,rank:1,email:"parent1@email.com",donor:"Mr. Sharma",sick:false,att:96,week:[1,1,0,1,1,1],
+   health:{bloodGroup:"B+",allergies:"None",conditions:"Healthy",lastCheckup:"2026-04-10",weight:"48kg",height:"162cm",vision:"Normal",vaccinations:"Up to date"}},
+  {id:2,name:"Priya Reddy",  cls:"10th",school:SCHOOLS[0],hostel:HOSTELS[1],marks:95,rank:2,email:"parent2@email.com",donor:null,sick:false,att:94,week:[1,1,1,1,1,1],
+   health:{bloodGroup:"O+",allergies:"Dust",conditions:"Mild asthma",lastCheckup:"2026-03-22",weight:"42kg",height:"155cm",vision:"Normal",vaccinations:"Up to date"}},
+  {id:3,name:"Anjali Singh", cls:"9th", school:SCHOOLS[1],hostel:HOSTELS[1],marks:91,rank:3,email:"parent3@email.com",donor:"Mrs. Patel",sick:true,att:78,week:[1,1,0,1,0,0],
+   health:{bloodGroup:"A+",allergies:"Pollen",conditions:"Fever - on rest",lastCheckup:"2026-05-20",weight:"38kg",height:"150cm",vision:"Spectacles",vaccinations:"Up to date"}},
+  {id:4,name:"Suresh Yadav", cls:"9th", school:SCHOOLS[2],hostel:HOSTELS[2],marks:88,rank:4,email:"parent4@email.com",donor:null,sick:false,att:92,week:[1,1,1,1,1,0],
+   health:{bloodGroup:"AB+",allergies:"None",conditions:"Healthy",lastCheckup:"2026-04-05",weight:"52kg",height:"165cm",vision:"Normal",vaccinations:"Up to date"}},
+  {id:5,name:"Kavitha Nair", cls:"8th", school:SCHOOLS[0],hostel:HOSTELS[1],marks:85,rank:5,email:"parent5@email.com",donor:"Dr. Rao",sick:true,att:72,week:[1,0,0,1,0,0],
+   health:{bloodGroup:"B-",allergies:"None",conditions:"Viral infection",lastCheckup:"2026-05-21",weight:"35kg",height:"148cm",vision:"Normal",vaccinations:"Pending - Hepatitis B"}},
+  {id:6,name:"Mohan Das",    cls:"8th", school:SCHOOLS[3],hostel:HOSTELS[0],marks:62,rank:6,email:"parent6@email.com",donor:null,sick:false,att:88,week:[1,1,1,0,1,1],
+   health:{bloodGroup:"O-",allergies:"None",conditions:"Healthy",lastCheckup:"2026-03-18",weight:"50kg",height:"160cm",vision:"Normal",vaccinations:"Up to date"}},
+  {id:7,name:"Lakshmi Devi", cls:"7th", school:SCHOOLS[1],hostel:HOSTELS[1],marks:58,rank:7,email:"parent7@email.com",donor:null,sick:false,att:90,week:[1,1,1,1,1,0],
+   health:{bloodGroup:"A-",allergies:"Seafood",conditions:"Healthy",lastCheckup:"2026-04-14",weight:"32kg",height:"142cm",vision:"Normal",vaccinations:"Up to date"}},
+  {id:8,name:"Arjun Reddy",  cls:"6th", school:SCHOOLS[2],hostel:HOSTELS[2],marks:42,rank:8,email:"parent8@email.com",donor:null,sick:true,att:65,week:[0,1,0,1,0,0],
+   health:{bloodGroup:"B+",allergies:"None",conditions:"Stomach pain",lastCheckup:"2026-05-22",weight:"28kg",height:"132cm",vision:"Normal",vaccinations:"Up to date"}},
+];
+const TRUST=[
+  {name:"Sri Ramaiah Goud",    role:"Chairman",       rank:1},
+  {name:"Smt. Saraswathi Devi",role:"Secretary",      rank:2},
+  {name:"Sri Venkat Rao",      role:"Treasurer",      rank:3},
+  {name:"Dr. Krishnamurthy",   role:"Education Head", rank:4},
+];
+const DONORS=[
+  {name:"Mr. Sharma",email:"sharma@email.com",students:[1],amount:50000},
+  {name:"Mrs. Patel",email:"patel@email.com", students:[3],amount:35000},
+  {name:"Dr. Rao",   email:"rao@email.com",   students:[5],amount:45000},
+];
+const EVENTS=[
+  {title:"Annual Day Celebration",date:"2026-01-15",photos:12,school:SCHOOLS[0]},
+  {title:"Sports Meet 2026",      date:"2026-02-20",photos:34,school:SCHOOLS[1]},
+  {title:"Science Exhibition",    date:"2026-03-10",photos:18,school:SCHOOLS[2]},
+];
+const EXAMS=[
+  {name:"Unit Test 1",      date:"2026-06-05",cls:"10th",subject:"All Subjects",status:"upcoming"},
+  {name:"Half Yearly Exam", date:"2026-07-15",cls:"All", subject:"All Subjects",status:"upcoming"},
+  {name:"Unit Test 2",      date:"2026-08-10",cls:"9th", subject:"All Subjects",status:"upcoming"},
+  {name:"Annual Exam",      date:"2026-11-20",cls:"All", subject:"All Subjects",status:"upcoming"},
+  {name:"Term 1 Exam",      date:"2026-04-10",cls:"All", subject:"All Subjects",status:"completed"},
+];
+const TIMETABLE={
+  "10th":{Mon:["Telugu","Hindi","English","Maths","Science","Social"],
+          Tue:["Maths","English","Telugu","Science","Hindi","Social"],
+          Wed:["Science","Maths","Social","English","Telugu","Hindi"],
+          Thu:["Hindi","Social","Maths","Telugu","English","Science"],
+          Fri:["English","Science","Hindi","Social","Maths","Telugu"],
+          Sat:["Social","Telugu","Science","Hindi","English","Maths"]},
+};
+
+// ── STATE
+let currentPage="home",studentFilter={school:"All",cls:"All",hostel:"All",sick:false};
+let rankFilter="All",selectedStudent=null,studentTab="overview",studentView="list";
+let healthFilter="All",examTab="schedule";
+
+// ── HELPERS
+function initials(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2)}
+function avatar(n,size=44,bg="#1a237e"){
+  return `<div class="avatar" style="width:${size}px;height:${size}px;background:linear-gradient(135deg,${bg},#f9a825);font-size:${size*.36}px">${initials(n)}</div>`;}
+function rankBadge(r){const c={1:"#FFD700",2:"#C0C0C0",3:"#CD7F32"};return c[r]?`<span class="rank-badge" style="background:${c[r]}">#${r}</span>`:""}
+function sickBadge(){return`<span class="sick-badge">🤒 SICK</span>`}
+function freeBadge(){return`<span class="free-badge">🎓 FREE</span>`}
+function medalEmoji(i){return i===0?"🥇":i===1?"🥈":i===2?"🥉":`#${i+1}`}
+function markClass(m){return m>=90?"mark-top":m<60?"mark-low":"mark-avg"}
+function statCard(label,value,icon,color){
+  return`<div class="stat-card" style="border-left:5px solid ${color}"><span style="font-size:26px">${icon}</span><div><div class="stat-val" style="color:${color}">${value}</div><div class="stat-lbl">${label}</div></div></div>`;}
+
+function render(){
+  document.getElementById("content").innerHTML=pages[currentPage]();
+  document.querySelectorAll(".nav-btn").forEach(b=>{
+    const id=b.textContent.trim().toLowerCase();
+    b.classList.toggle("active",id.includes(currentPage==="home"?"home":currentPage));});
+}
+function showPage(p){currentPage=p;selectedStudent=null;studentTab="overview";render();window.scrollTo(0,0);}
+function toggleMenu(){const m=document.getElementById("mobile-menu");m.style.display=m.style.display==="flex"?"none":"flex";}
+
+// ── PAGES
+const pages={
+
+home:()=>{
+  const top=[...STUDENTS].sort((a,b)=>a.rank-b.rank).slice(0,3);
+  const sickCount=STUDENTS.filter(s=>s.sick).length;
+  const pendingVacc=STUDENTS.filter(s=>s.health.vaccinations.includes("Pending")).length;
+  return`
+  <div class="hero">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div class="hero-logo">🏛️</div>
+      <div>
+        <div style="color:var(--gold);font-weight:800;font-size:10px;letter-spacing:3px;text-transform:uppercase">Sri Kakatiya Cheyutha Charitable Trust</div>
+        <div style="color:#fff;font-size:20px;font-weight:800;line-height:1.2;margin-top:3px">Student ERP Portal</div>
+        <div style="color:#b3c5ff;font-size:11px;margin-top:5px">Nizamabad District · Telangana · Classes 5th–10th</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px">
+      ${["📧 Weekly Reports","📸 Event Photos","🎓 ID Cards","📊 Rankings","🏥 Health Records","📅 Exam Schedule"].map(f=>`<span class="feat-chip">${f}</span>`).join("")}
+    </div>
+  </div>
+
+  <div class="free-banner">
+    <span style="font-size:28px">🎓</span>
+    <div>
+      <div style="font-weight:800;font-size:14px">100% FREE Education for All Children</div>
+      <div style="font-size:11px;opacity:.9;margin-top:2px">Sri Kakatiya Cheyutha Charitable Trust provides completely free quality education — no fees, no charges. Every child deserves to learn.</div>
+    </div>
+  </div>
+
+  <div class="grid-stat">
+    ${statCard("Total Students",STUDENTS.length,"👨‍🎓","var(--navy)")}
+    ${statCard("Schools",SCHOOLS.length,"🏫","var(--red)")}
+    ${statCard("Hostels",HOSTELS.length,"🏠","var(--gold)")}
+    ${statCard("Donors",DONORS.length,"❤️","var(--green)")}
+    ${statCard("Sick Today",sickCount,"🤒","var(--sick)")}
+    ${statCard("Vacc. Pending",pendingVacc,"💉","var(--purple)")}
+  </div>
+
+  <div class="card" style="margin-bottom:18px">
+    <div class="sec-title">🏆 Class Toppers — Click to View Profile</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      ${top.map((s,i)=>`
+        <div class="topper-card" onclick="openStudent(${s.id})">
+          <div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:20px">${i===0?"🥇":i===1?"🥈":"🥉"}</div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;align-items:center;gap:7px">
+            ${avatar(s.name,48)}
+            <div style="font-weight:800;color:var(--navy);font-size:12px">${s.name}</div>
+            <div style="font-size:10px;color:var(--muted)">${s.cls} · ${s.marks}%</div>
+            <span style="background:var(--gold);color:#000;border-radius:20px;padding:2px 10px;font-size:10px;font-weight:800">Rank #${s.rank}</span>
+          </div>
+        </div>`).join("")}
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+    <div class="card" style="cursor:pointer" onclick="showPage('exams')">
+      <div style="font-weight:800;color:var(--navy);margin-bottom:10px;font-size:14px">📅 Upcoming Exams</div>
+      ${EXAMS.filter(e=>e.status==="upcoming").slice(0,3).map(e=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--light);border-radius:8px;margin-bottom:5px">
+          <span style="font-weight:600;font-size:11px;color:var(--navy)">${e.name}</span>
+          <span style="font-size:10px;color:var(--muted)">${e.date}</span>
+        </div>`).join("")}
+    </div>
+    <div class="card" style="cursor:pointer" onclick="showPage('health')">
+      <div style="font-weight:800;color:var(--navy);margin-bottom:10px;font-size:14px">🏥 Health Alerts</div>
+      ${STUDENTS.filter(s=>s.sick).map(s=>`
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:#fff5f5;border-radius:8px;margin-bottom:5px;border:1px solid rgba(183,28,28,.2)">
+          ${avatar(s.name,28,"#b71c1c")}
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--navy)">${s.name}</div>
+            <div style="font-size:9px;color:var(--sick)">${s.health.conditions}</div>
+          </div>
+        </div>`).join("")}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-title">👥 Trust Members (Admin-Ranked)</div>
+    <div style="display:flex;gap:11px;flex-wrap:wrap">
+      ${[...TRUST].sort((a,b)=>a.rank-b.rank).map(m=>`
+        <div class="member-chip">
+          ${avatar(m.name,40,"#c62828")}
+          <div>
+            <div style="font-weight:700;color:var(--navy);font-size:12px">${m.name}</div>
+            <div style="font-size:10px;color:var(--muted)">${m.role}</div>
+            <div style="font-size:10px;color:var(--gold);font-weight:700">Rank #${m.rank}</div>
+          </div>
+        </div>`).join("")}
+    </div>
+  </div>`;
+},
+
+students:()=>{
+  if(selectedStudent) return studentProfile();
+  let filtered=[...STUDENTS]
+    .filter(s=>studentFilter.school==="All"||s.school===studentFilter.school)
+    .filter(s=>studentFilter.cls==="All"||s.cls===studentFilter.cls)
+    .filter(s=>studentFilter.hostel==="All"||s.hostel===studentFilter.hostel)
+    .filter(s=>!studentFilter.sick||s.sick)
+    .sort((a,b)=>a.rank-b.rank);
+  const viewToggle=`<div style="display:flex;gap:5px"><button class="btn ${studentView==='list'?'btn-navy':'btn-ghost'}" onclick="setStudentView('list')">List</button><button class="btn ${studentView==='id'?'btn-navy':'btn-ghost'}" onclick="setStudentView('id')">ID Cards</button></div>`;
+  const filters=`<div class="filter-bar">
+    <select onchange="setSF('school',this.value)">${["All",...SCHOOLS].map(o=>`<option ${studentFilter.school===o?"selected":""}>${o}</option>`).join("")}</select>
+    <select onchange="setSF('cls',this.value)">${["All",...CLASSES].map(o=>`<option ${studentFilter.cls===o?"selected":""}>${o}</option>`).join("")}</select>
+    <select onchange="setSF('hostel',this.value)">${["All",...HOSTELS].map(o=>`<option ${studentFilter.hostel===o?"selected":""}>${o}</option>`).join("")}</select>
+    <label><input type="checkbox" ${studentFilter.sick?"checked":""} onchange="setSF('sick',this.checked)"> Sick Only</label>
+  </div>`;
+  let body=studentView==="list"
+    ?filtered.map(s=>`
+      <div class="student-row ${s.sick?"sick-row":""}" onclick="openStudent(${s.id})">
+        ${avatar(s.name,44,s.sick?"#b71c1c":"#1a237e")}
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;color:var(--navy);font-size:13px">${s.name}${rankBadge(s.rank)}${s.sick?sickBadge():""}${freeBadge()}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">${s.cls} · ${s.school}</div>
+          <div style="font-size:10px;color:var(--muted)">${s.hostel}${s.donor?` · 💝 ${s.donor}`:""}</div>
+          <div style="font-size:10px;color:var(--teal);margin-top:1px">🩸 ${s.health.bloodGroup} · ${s.health.conditions}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:18px;font-weight:800;color:var(--navy)">${s.marks}%</div>
+          <div style="font-size:9px;color:var(--muted)">Att: ${s.att}%</div>
+          <div style="font-size:9px;color:var(--muted)">Rank #${s.rank}</div>
+        </div>
+      </div>`).join("")
+    :`<div class="grid-2">${filtered.map(s=>idCardHTML(s)).join("")}</div>`;
+  return`
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <div class="sec-title" style="margin:0">👨‍🎓 Students Directory</div>${viewToggle}
+    </div>
+    <div class="alert alert-green">🎓 All students receive FREE education — no fees, no charges from Sri Kakatiya Cheyutha Charitable Trust.</div>
+    ${filters}
+    <div style="display:flex;flex-direction:column;gap:9px">${body}</div>`;
+},
+
+attendance:()=>{
+  const sickFirst=[...STUDENTS].sort((a,b)=>b.sick-a.sick);
+  return`
+    <div class="sec-title">📋 Attendance & Sick Leave</div>
+    <div class="alert alert-sick">🤒 Sick students are shown FIRST in all reports as per trust policy.</div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      ${sickFirst.map(s=>`
+        <div style="background:${s.sick?"#fff5f5":"#fff"};border-radius:12px;padding:13px 15px;
+          border:2px solid ${s.sick?"rgba(183,28,28,.3)":"rgba(26,35,126,.1)"};box-shadow:0 2px 8px rgba(26,35,126,.05)">
+          <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+            ${avatar(s.name,40,s.sick?"#b71c1c":"#1a237e")}
+            <div style="flex:1">
+              <div style="font-weight:700;color:var(--navy);font-size:13px">${s.name}${s.sick?sickBadge():""}</div>
+              <div style="font-size:10px;color:var(--muted)">${s.cls} · ${s.school}</div>
+              ${s.sick?`<div style="font-size:10px;color:var(--sick);font-weight:600">Condition: ${s.health.conditions}</div>`:""}
+            </div>
+            <div style="font-size:19px;font-weight:800;color:${s.att<75?"var(--sick)":"var(--green)"}">${s.att}%</div>
+          </div>
+          <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap">
+            ${WEEK.map((d,i)=>`<div class="day-chip ${s.week[i]?"present":"absent"}">${d[0]}</div>`).join("")}
+            ${s.sick?`<button class="btn btn-red" style="margin-left:auto;font-size:10px" onclick="alert('Email sent to ${s.email}')">📧 Notify Parent</button>`:""}
+          </div>
+        </div>`).join("")}
+    </div>`;
+},
+
+rankings:()=>{
+  const sorted=[...STUDENTS].filter(s=>rankFilter==="All"||s.school===rankFilter).sort((a,b)=>b.marks-a.marks);
+  return`
+    <div class="sec-title">🏆 Rankings & Leaderboard</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+      <button class="btn ${rankFilter==="All"?"btn-gold":"btn-ghost"}" onclick="setRank('All')">Overall</button>
+      ${SCHOOLS.map(sc=>`<button class="btn ${rankFilter===sc?"btn-gold":"btn-ghost"}" onclick="setRank('${sc}')">${sc.split(" ")[0]}</button>`).join("")}
+    </div>
+    <div class="card" style="overflow-x:auto">
+      <table><thead><tr><th>Rank</th><th>Student</th><th>Class</th><th>Marks</th><th>Attendance</th><th>Status</th></tr></thead>
+      <tbody>${sorted.map((s,i)=>`
+        <tr style="${i<3?"font-weight:700":""}">
+          <td style="font-size:15px">${medalEmoji(i)}</td>
+          <td><div style="display:flex;align-items:center;gap:7px">${avatar(s.name,26)}
+            <span style="color:var(--navy)">${s.name}${s.sick?sickBadge():""}</span></div></td>
+          <td style="color:var(--muted)">${s.cls}</td>
+          <td><span class="${markClass(s.marks)}">${s.marks}%</span></td>
+          <td style="color:${s.att<75?"var(--sick)":"var(--green)"};font-weight:600">${s.att}%</td>
+          <td style="font-size:10px;color:${s.marks>=90?"var(--green)":s.marks<60?"var(--sick)":"var(--muted)"}">
+            ${s.marks>=90?"⭐ Topper":s.marks<60?"⚠️ Needs Help":"✓ Average"}</td>
+        </tr>`).join("")}
+      </tbody></table>
+    </div>`;
+},
+
+donors:()=>`
+  <div class="sec-title">❤️ Donors & Adoption (Internal)</div>
+  <div class="alert alert-orange">🔒 Internal Only — Donor-student adoption details are confidential.</div>
+  <div class="alert alert-green">🎓 This trust provides FREE education. Donors help cover meals, books, uniforms & hostel costs.</div>
+  <div class="grid-2">
+    ${DONORS.map(d=>`
+      <div class="card donor-card">
+        <div style="display:flex;gap:11px;align-items:center;margin-bottom:12px">
+          ${avatar(d.name,44,"#f9a825")}
+          <div>
+            <div style="font-weight:800;color:var(--navy);font-size:14px">${d.name}</div>
+            <div style="font-size:10px;color:var(--muted)">${d.email}</div>
+            <div style="color:var(--green);font-weight:700;font-size:11px;margin-top:2px">₹${d.amount.toLocaleString()} donated</div>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:7px">💝 Adopted Students:</div>
+        ${d.students.map(sid=>{const s=STUDENTS.find(x=>x.id===sid);return s?`
+          <div style="display:flex;align-items:center;gap:8px;background:var(--light);border-radius:8px;padding:7px 10px;margin-bottom:5px">
+            ${avatar(s.name,28)}
+            <div>
+              <div style="font-weight:600;font-size:11px;color:var(--navy)">${s.name} ${freeBadge()}</div>
+              <div style="font-size:9px;color:var(--muted)">${s.cls} · Rank #${s.rank} · ${s.marks}%</div>
+            </div>
+          </div>`:""}).join("")}
+        <div style="display:flex;gap:6px;margin-top:9px">
+          <button class="btn btn-navy" style="flex:1;font-size:10px">📊 Share Report</button>
+          <button class="btn btn-green" style="flex:1;font-size:10px">📧 Email Donor</button>
+        </div>
+      </div>`).join("")}
+    <div class="dashed-add">
+      <div style="font-size:30px">➕</div>
+      <div style="font-weight:700;color:var(--navy)">Add New Donor</div>
+      <div style="font-size:10px;color:var(--muted)">Link donor to one or more students</div>
+    </div>
+  </div>`,
+
+events:()=>`
+  <div class="sec-title">📸 Event Photos & Google Drive</div>
+  <div class="alert alert-green">📁 Photos sync from Google Drive and distributed to individual student profiles automatically.</div>
+  <div class="grid-2" style="margin-bottom:18px">
+    ${EVENTS.map(e=>`
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="height:90px;background:linear-gradient(135deg,var(--navy),var(--red));display:flex;align-items:center;justify-content:center;font-size:38px">📸</div>
+        <div style="padding:13px">
+          <div style="font-weight:800;color:var(--navy);font-size:13px">${e.title}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">${e.school} · ${e.date}</div>
+          <div style="font-size:10px;color:var(--muted)">${e.photos} photos</div>
+          <div style="display:flex;gap:5px;margin-top:9px">
+            <button class="btn btn-navy" style="flex:1;font-size:10px">View All</button>
+            <button class="btn btn-green" style="flex:1;font-size:10px">📤 Share</button>
+            <button class="btn btn-teal" style="flex:1;font-size:10px">📧 To Parents</button>
+          </div>
+        </div>
+      </div>`).join("")}
+    <div class="dashed-add" style="min-height:150px">
+      <div style="font-size:30px">🔗</div>
+      <div style="font-weight:700;color:var(--navy)">Connect Google Drive</div>
+      <div style="font-size:10px;color:var(--muted);text-align:center">Import event photos automatically</div>
+      <button class="btn btn-red">Link Drive</button>
+    </div>
+  </div>
+  <div class="card">
+    <div style="font-size:15px;font-weight:800;color:var(--navy);margin-bottom:13px">📧 Weekly Photo Reports to Parents</div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      ${STUDENTS.slice(0,5).map(s=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--light);border-radius:10px;flex-wrap:wrap;gap:6px">
+          <div style="display:flex;gap:8px;align-items:center">
+            ${avatar(s.name,32)}
+            <div>
+              <div style="font-weight:600;color:var(--navy);font-size:11px">${s.name} ${freeBadge()}</div>
+              <div style="font-size:9px;color:var(--muted)">${s.email}</div>
+            </div>
+          </div>
+          <button class="btn btn-navy" style="font-size:10px">📧 Send Photos</button>
+        </div>`).join("")}
+    </div>
+    <button class="btn btn-gold" style="margin-top:11px;width:100%">📧 Send Weekly Report to All Parents</button>
+  </div>`,
+
+reports:()=>`
+  <div class="sec-title">📊 Reports & Analytics</div>
+  <div class="grid-2" style="margin-bottom:18px">
+    ${[
+      {title:"School-wise Ranking", desc:"Compare performance across all schools",    icon:"🏫",color:"var(--navy)"},
+      {title:"Hostel-wise Ranking", desc:"Track hostel performance and discipline",   icon:"🏠",color:"var(--red)"},
+      {title:"Class-wise Report",   desc:"5th to 10th class breakdown",               icon:"📚",color:"var(--gold)"},
+      {title:"Sick Leave Report",   desc:"Attendance and health records (priority)",  icon:"🤒",color:"var(--sick)"},
+      {title:"Health Summary",      desc:"Blood groups, vaccinations, conditions",    icon:"🏥",color:"var(--teal)"},
+      {title:"Exam Performance",    desc:"Subject-wise marks and progress",           icon:"📝",color:"var(--purple)"},
+      {title:"Donor Impact Report", desc:"Student progress per donor for sharing",   icon:"❤️",color:"var(--green)"},
+      {title:"Free Education Stats",desc:"Impact of free education on community",    icon:"🎓",color:"var(--orange)"},
+      {title:"CCTV Access Log",     desc:"Parent camera access management",          icon:"📹",color:"#607d8b"},
+    ].map(r=>`
+      <div class="card" style="border-top:4px solid ${r.color}">
+        <div style="font-size:28px;margin-bottom:7px">${r.icon}</div>
+        <div style="font-weight:800;color:var(--navy);font-size:13px;margin-bottom:4px">${r.title}</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:11px">${r.desc}</div>
+        <div style="display:flex;gap:5px">
+          <button class="btn" style="flex:1;background:${r.color};color:${r.color==="var(--gold)"?"#000":"#fff"};font-size:10px">View</button>
+          <button class="btn btn-ghost" style="flex:1;font-size:10px">⬇️ Export</button>
+        </div>
+      </div>`).join("")}
+  </div>
+  <div style="background:#fff5f5;border:2px solid var(--sick);border-radius:16px;padding:18px">
+    <div style="font-size:14px;font-weight:800;color:var(--sick);margin-bottom:11px">🤒 Priority: Current Sick Students (First in Report)</div>
+    ${STUDENTS.filter(s=>s.sick).map(s=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:10px;padding:9px 13px;margin-bottom:7px;border:1.5px solid rgba(183,28,28,.25);flex-wrap:wrap;gap:6px">
+        <div style="display:flex;gap:8px;align-items:center">
+          ${avatar(s.name,34,"#b71c1c")}
+          <div>
+            <div style="font-weight:700;color:var(--navy);font-size:12px">${s.name} ${sickBadge()}</div>
+            <div style="font-size:10px;color:var(--sick)">${s.health.conditions} · Att: ${s.att}%</div>
+          </div>
+        </div>
+        <button class="btn btn-red" style="font-size:10px">📧 Notify Parent</button>
+      </div>`).join("")}
+  </div>`,
+
+health:()=>{
+  const filtered=healthFilter==="All"?STUDENTS:healthFilter==="sick"?STUDENTS.filter(s=>s.sick):STUDENTS.filter(s=>s.health.vaccinations.includes("Pending"));
+  const sickFirst=[...filtered].sort((a,b)=>b.sick-a.sick);
+  return`
+    <div class="sec-title">🏥 Student Health Records</div>
+    <div class="alert alert-sick">🤒 Sick students are always shown first. Health records are updated after each checkup.</div>
+    <div class="alert alert-teal">🩺 All students receive regular free medical checkups arranged by the trust.</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn ${healthFilter==="All"?"btn-teal":"btn-ghost"}" onclick="setHealth('All')">All Students</button>
+      <button class="btn ${healthFilter==="sick"?"btn-red":"btn-ghost"}" onclick="setHealth('sick')">🤒 Sick Only</button>
+      <button class="btn ${healthFilter==="vacc"?"btn-purple":"btn-ghost"}" onclick="setHealth('vacc')">💉 Vaccination Pending</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${sickFirst.map(s=>`
+        <div style="background:${s.sick?"#fff5f5":"#fff"};border-radius:14px;padding:15px;border:2px solid ${s.sick?"rgba(183,28,28,.3)":"rgba(0,105,92,.2)"};box-shadow:0 2px 8px rgba(26,35,126,.06)">
+          <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:10px">
+            ${avatar(s.name,44,s.sick?"#b71c1c":"#00695c")}
+            <div style="flex:1">
+              <div style="font-weight:700;color:var(--navy);font-size:14px">${s.name}${s.sick?sickBadge():""}${freeBadge()}</div>
+              <div style="font-size:10px;color:var(--muted)">${s.cls} · ${s.school}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px;font-weight:700;color:var(--teal)">🩸 ${s.health.bloodGroup}</div>
+              <div style="font-size:9px;color:var(--muted)">Last checkup: ${s.health.lastCheckup}</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:7px">
+            ${[
+              {l:"Condition",v:s.health.conditions,c:s.sick?"var(--sick)":"var(--green)"},
+              {l:"Weight",v:s.health.weight,c:"var(--navy)"},
+              {l:"Height",v:s.health.height,c:"var(--navy)"},
+              {l:"Vision",v:s.health.vision,c:"var(--navy)"},
+              {l:"Allergies",v:s.health.allergies,c:s.health.allergies!=="None"?"var(--orange)":"var(--muted)"},
+              {l:"Vaccinations",v:s.health.vaccinations,c:s.health.vaccinations.includes("Pending")?"var(--sick)":"var(--green)"},
+            ].map(x=>`
+              <div style="background:var(--light);border-radius:8px;padding:7px 10px">
+                <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">${x.l}</div>
+                <div style="font-weight:700;font-size:11px;color:${x.c};margin-top:2px">${x.v}</div>
+              </div>`).join("")}
+          </div>
+          <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+            <button class="btn btn-teal" style="font-size:10px">📋 Full Health History</button>
+            <button class="btn btn-navy" style="font-size:10px">📧 Send to Parent</button>
+            ${s.sick?`<button class="btn btn-red" style="font-size:10px">🚨 Emergency Alert</button>`:""}
+          </div>
+        </div>`).join("")}
+    </div>`;
+},
+
+exams:()=>{
+  const upcomingExams=EXAMS.filter(e=>e.status==="upcoming");
+  const completedExams=EXAMS.filter(e=>e.status==="completed");
+  const tt=TIMETABLE["10th"];
+  const days=Object.keys(tt);
+  return`
+    <div class="sec-title">📅 Exam Schedule & Timetable</div>
+    <div class="tabs">
+      <button class="tab-btn ${examTab==="schedule"?"active":""}" onclick="setExamTab('schedule')">📋 Exam Schedule</button>
+      <button class="tab-btn ${examTab==="timetable"?"active":""}" onclick="setExamTab('timetable')">🗓️ Class Timetable</button>
+      <button class="tab-btn ${examTab==="results"?"active":""}" onclick="setExamTab('results')">📊 Results</button>
+    </div>
+    ${examTab==="schedule"?`
+      <div style="margin-bottom:18px">
+        <div class="sec-sub">📌 Upcoming Exams</div>
+        ${upcomingExams.map(e=>`
+          <div class="exam-row">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="background:var(--navy);color:var(--gold);border-radius:10px;padding:8px 12px;text-align:center;min-width:52px">
+                <div style="font-size:9px;font-weight:700">${e.date.split("-")[1]=="06"?"JUN":e.date.split("-")[1]=="07"?"JUL":e.date.split("-")[1]=="08"?"AUG":"NOV"}</div>
+                <div style="font-size:18px;font-weight:800;line-height:1">${e.date.split("-")[2]}</div>
+              </div>
+              <div>
+                <div style="font-weight:700;color:var(--navy);font-size:13px">${e.name}</div>
+                <div style="font-size:10px;color:var(--muted)">${e.cls} · ${e.subject}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:5px">
+              <span style="background:#e8f5e9;color:var(--green);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700">Upcoming</span>
+              <button class="btn btn-navy" style="font-size:10px">📧 Remind Parents</button>
+            </div>
+          </div>`).join("")}
+      </div>
+      <div>
+        <div class="sec-sub">✅ Completed Exams</div>
+        ${completedExams.map(e=>`
+          <div class="exam-row">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="background:#e8f5e9;color:var(--green);border-radius:10px;padding:8px 12px;text-align:center;min-width:52px">
+                <div style="font-size:9px;font-weight:700">APR</div>
+                <div style="font-size:18px;font-weight:800;line-height:1">${e.date.split("-")[2]}</div>
+              </div>
+              <div>
+                <div style="font-weight:700;color:var(--navy);font-size:13px">${e.name}</div>
+                <div style="font-size:10px;color:var(--muted)">${e.cls} · ${e.subject}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:5px">
+              <span style="background:#e8f5e9;color:var(--green);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700">✓ Done</span>
+              <button class="btn btn-green" style="font-size:10px">📊 View Results</button>
+            </div>
+          </div>`).join("")}
+      </div>
+    `:""}
+    ${examTab==="timetable"?`
+      <div class="card">
+        <div style="font-size:13px;font-weight:800;color:var(--navy);margin-bottom:13px">🗓️ Weekly Timetable — Class 10th</div>
+        <div style="overflow-x:auto">
+          <div style="display:grid;grid-template-columns:80px repeat(6,1fr);gap:5px;min-width:520px">
+            <div class="timetable-cell header">Period</div>
+            ${SUBJECTS.map(s=>`<div class="timetable-cell header">${s}</div>`).join("")}
+            ${days.map(day=>`
+              <div class="timetable-cell header">${day}</div>
+              ${tt[day].map(subj=>{
+                const colors={"Telugu":"#e3f2fd","Hindi":"#fce4ec","English":"#e8f5e9","Maths":"#fff3e0","Science":"#f3e5f5","Social":"#fff8e1"};
+                return`<div class="timetable-cell" style="background:${colors[subj]||"#fff"}"><span style="font-size:9px;font-weight:700;color:var(--navy)">${subj}</span></div>`}).join("")}`).join("")}
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;margin-top:11px;flex-wrap:wrap">
+          ${["5th","6th","7th","8th","9th","10th"].map(c=>`<button class="btn btn-ghost" style="font-size:10px" onclick="alert('Timetable for class ${c}')">${c}</button>`).join("")}
+        </div>
+      </div>
+    `:""}
+    ${examTab==="results"?`
+      <div class="card" style="overflow-x:auto">
+        <div style="font-size:13px;font-weight:800;color:var(--navy);margin-bottom:13px">📊 Term 1 Exam Results</div>
+        <table>
+          <thead><tr><th>Student</th><th>Class</th><th>Telugu</th><th>Hindi</th><th>English</th><th>Maths</th><th>Science</th><th>Social</th><th>Total</th></tr></thead>
+          <tbody>
+            ${STUDENTS.map(s=>{
+              const subMarks=SUBJECTS.map(()=>Math.floor(40+Math.random()*60));
+              const total=Math.round(subMarks.reduce((a,b)=>a+b,0)/SUBJECTS.length);
+              return`<tr>
+                <td style="font-weight:600;color:var(--navy)">${s.name}${s.sick?sickBadge():""}</td>
+                <td>${s.cls}</td>
+                ${subMarks.map(m=>`<td><span class="${markClass(m)}">${m}</span></td>`).join("")}
+                <td><strong>${total}%</strong></td>
+              </tr>`;}).join("")}
+          </tbody>
+        </table>
+      </div>
+    `:""}`;
+},
+
+cctv:()=>`
+  <div class="sec-title">📹 CCTV Parent Access</div>
+  <div class="alert alert-purple">🔒 Each parent gets access to ONE camera only, covering their child's area. Approved by Admin.</div>
+  <div class="grid-2">
+    ${STUDENTS.slice(0,6).map(s=>`
+      <div class="card">
+        <div style="display:flex;gap:9px;align-items:center;margin-bottom:11px">
+          ${avatar(s.name,38)}
+          <div><div style="font-weight:700;color:var(--navy)">${s.name}</div><div style="font-size:10px;color:var(--muted)">${s.hostel}</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:7px">Camera: <strong style="color:var(--navy)">CAM-${s.hostel.split(" ")[0].toUpperCase()}-01</strong></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:9px">
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--green)"></div>
+          <span style="font-size:10px;color:var(--green);font-weight:600">Live · Parent Access Enabled</span>
+        </div>
+        <button class="btn btn-purple" style="width:100%;font-size:11px">🎥 View Parent Feed</button>
+      </div>`).join("")}
+  </div>`,
+};
+
+function studentProfile(){
+  const s=selectedStudent;
+  const tabs=["overview","attendance","health","id-card","reports"];
+  const tabHtml=tabs.map(t=>`<button class="tab-btn ${studentTab===t?"active":""}" onclick="setStudentTab('${t}')">${t.replace("-"," ")}</button>`).join("");
+  let body="";
+  if(studentTab==="overview"){
+    body=`<div class="grid-2">
+      ${[
+        {l:"School",v:s.school,i:"🏫"},{l:"Hostel",v:s.hostel,i:"🏠"},
+        {l:"Parent Email",v:s.email,i:"📧"},{l:"Donor",v:s.donor||"Not adopted yet",i:"💝"},
+        {l:"Current Marks",v:s.marks+"%",i:"📊"},{l:"Health Status",v:s.health.conditions,i:s.sick?"🤒":"✅"},
+        {l:"Blood Group",v:s.health.bloodGroup,i:"🩸"},{l:"Education",v:"FREE — Trust Supported",i:"🎓"},
+      ].map(x=>`<div class="card"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${x.i} ${x.l}</div><div style="font-weight:700;color:var(--navy);font-size:12px">${x.v}</div></div>`).join("")}
+    </div>`;
+  } else if(studentTab==="attendance"){
+    body=`<div class="card">
+      ${s.sick?`<div class="alert alert-sick">🤒 Student is currently on Sick Leave — ${s.health.conditions}. Parents notified via email.</div>`:""}
+      <div style="font-size:14px;font-weight:800;color:var(--navy);margin-bottom:12px">Weekly Attendance</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        ${WEEK.map((d,i)=>`
+          <div style="text-align:center;background:${s.week[i]?"#e8f5e9":"#ffebee"};border-radius:10px;padding:9px 12px;min-width:46px;border:2px solid ${s.week[i]?"var(--green)":"var(--sick)"}">
+            <div style="font-weight:700;font-size:11px;color:${s.week[i]?"var(--green)":"var(--sick)"}">${d}</div>
+            <div style="font-size:15px;margin-top:2px">${s.week[i]?"✅":"❌"}</div>
+          </div>`).join("")}
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--muted)">Overall Attendance: <strong style="color:var(--navy)">${s.att}%</strong></div>
+    </div>`;
+  } else if(studentTab==="health"){
+    body=`<div class="card">
+      ${s.sick?`<div class="alert alert-sick">🤒 Currently Sick: ${s.health.conditions}</div>`:""}
+      <div style="font-size:14px;font-weight:800;color:var(--navy);margin-bottom:12px">🏥 Health Record</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">
+        ${[
+          {l:"Blood Group",v:s.health.bloodGroup,c:"var(--teal)"},
+          {l:"Weight",v:s.health.weight,c:"var(--navy)"},
+          {l:"Height",v:s.health.height,c:"var(--navy)"},
+          {l:"Vision",v:s.health.vision,c:"var(--navy)"},
+          {l:"Allergies",v:s.health.allergies,c:s.health.allergies!=="None"?"var(--orange)":"var(--green)"},
+          {l:"Vaccinations",v:s.health.vaccinations,c:s.health.vaccinations.includes("Pending")?"var(--sick)":"var(--green)"},
+          {l:"Condition",v:s.health.conditions,c:s.sick?"var(--sick)":"var(--green)"},
+          {l:"Last Checkup",v:s.health.lastCheckup,c:"var(--muted)"},
+        ].map(x=>`<div style="background:var(--light);border-radius:8px;padding:9px 11px"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">${x.l}</div><div style="font-weight:700;color:${x.c};font-size:12px;margin-top:3px">${x.v}</div></div>`).join("")}
+      </div>
+      <div style="display:flex;gap:6px;margin-top:12px">
+        <button class="btn btn-teal" style="font-size:10px">📋 Full History</button>
+        <button class="btn btn-navy" style="font-size:10px">📧 Email Parent</button>
+        ${s.sick?`<button class="btn btn-red" style="font-size:10px">🚨 Emergency Alert</button>`:""}
+      </div>
+    </div>`;
+  } else if(studentTab==="id-card"){
+    body=`<div style="max-width:270px">${idCardHTML(s)}<button class="btn btn-green" style="width:100%;margin-top:9px">⬇️ Download ID Card</button></div>`;
+  } else {
+    body=`<div class="card">
+      <div style="font-size:14px;font-weight:800;color:var(--navy);margin-bottom:12px">📊 Academic Reports</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        ${["Term 1 Report","Term 2 Report","Mid-Year Progress","Annual Report"].map(r=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 13px;background:var(--light);border-radius:10px;flex-wrap:wrap;gap:5px">
+            <span style="font-weight:600;color:var(--navy);font-size:12px">📄 ${r}</span>
+            <div style="display:flex;gap:5px">
+              <button class="btn btn-navy" style="font-size:10px">View</button>
+              <button class="btn btn-green" style="font-size:10px">📧 Email Parent</button>
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+  }
+  return`
+    <button class="btn back-btn" onclick="closeStudent()">← Back</button>
+    <div style="background:linear-gradient(135deg,var(--navy),var(--red));border-radius:18px;padding:20px;color:#fff;margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      ${avatar(s.name,62,"#c62828")}
+      <div style="flex:1">
+        <div style="font-size:19px;font-weight:800;font-family:Georgia,serif">${s.name}${s.sick?sickBadge():""}${freeBadge()}</div>
+        <div style="color:#b3c5ff;font-size:11px;margin-top:3px">ID: SKT-${String(s.id).padStart(4,"0")} · ${s.cls} Class · ${s.school}</div>
+        <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap">
+          <span style="background:var(--gold);color:#000;border-radius:20px;padding:2px 11px;font-size:10px;font-weight:800">Rank #${s.rank}</span>
+          <span style="background:rgba(255,255,255,.2);color:#fff;border-radius:20px;padding:2px 11px;font-size:10px">${s.marks}% Marks</span>
+          <span style="background:rgba(255,255,255,.2);color:#fff;border-radius:20px;padding:2px 11px;font-size:10px">${s.att}% Att.</span>
+          <span style="background:#1b5e20;color:#fff;border-radius:20px;padding:2px 11px;font-size:10px;font-weight:700">🎓 FREE</span>
+        </div>
+      </div>
+    </div>
+    <div class="tabs">${tabHtml}</div>${body}`;
+}
+
+function idCardHTML(s){
+  return`<div class="id-card">
+    <div style="position:absolute;top:-16px;right:-16px;width:65px;height:65px;border-radius:50%;background:rgba(255,215,0,.12)"></div>
+    <div style="font-size:7px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:7px">Sri Kakatiya Cheyutha Charitable Trust</div>
+    <div style="font-size:7px;color:#b3c5ff;margin-bottom:7px">🎓 FREE Education for All Children</div>
+    <div style="display:flex;gap:9px;align-items:center;margin-bottom:9px">
+      ${avatar(s.name,44,"#c62828")}
+      <div>
+        <div style="font-weight:800;font-size:12px">${s.name}</div>
+        <div style="font-size:9px;color:#b3c5ff">ID: SKT-${String(s.id).padStart(4,"0")}</div>
+        ${s.rank<=3?`<div style="font-size:14px">${s.rank===1?"🥇":s.rank===2?"🥈":"🥉"}</div>`:""}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:9px">
+      <div><span style="color:var(--gold)">Class:</span> ${s.cls}</div>
+      <div><span style="color:var(--gold)">Rank:</span> #${s.rank}</div>
+      <div><span style="color:var(--gold)">Blood:</span> ${s.health.bloodGroup}</div>
+      <div><span style="color:var(--gold)">Att:</span> ${s.att}%</div>
+      <div style="grid-column:1/-1"><span style="color:var(--gold)">School:</span> ${s.school}</div>
+      <div style="grid-column:1/-1"><span style="color:var(--gold)">Hostel:</span> ${s.hostel}</div>
+      ${s.donor?`<div style="grid-column:1/-1"><span style="color:var(--gold)">Donor:</span> 💝 ${s.donor}</div>`:""}
+    </div>
+    <div style="margin-top:9px;border-top:1px solid rgba(255,255,255,.2);padding-top:6px;display:flex;justify-content:space-between;font-size:8px;color:#b3c5ff">
+      <span>Nizamabad, Telangana</span><span>2025–26</span>
+    </div>
+  </div>`;}
+
+function openStudent(id){selectedStudent=STUDENTS.find(s=>s.id===id);studentTab="overview";render();window.scrollTo(0,0);}
+function closeStudent(){selectedStudent=null;render();}
+function setStudentTab(t){studentTab=t;render();}
+function setStudentView(v){studentView=v;render();}
+function setSF(k,v){studentFilter[k]=v;render();}
+function setRank(v){rankFilter=v;render();}
+function setHealth(v){healthFilter=v;render();}
+function setExamTab(t){examTab=t;render();}
+
+render();
+</script>
+</body>
+</html>
